@@ -41,6 +41,7 @@ public sealed class RegisterEndPoint: IEndpoint
                 new RegisterResponse(user.Id, user.Email, user.Document));
         
         var error = result.Error;
+        
         return Results.Problem(
             detail: error.Description,
             title: error.Code,

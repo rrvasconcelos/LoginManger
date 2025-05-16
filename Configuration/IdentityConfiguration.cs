@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using LoginManager.Configuration.Options;
 using LoginManager.Data;
 using LoginManager.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,19 +12,18 @@ public static class IdentityConfiguration
 {
     public static IServiceCollection AddIdentityConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
+        services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.Position));
+        
+        var jwtSection = configuration.GetSection(JwtOptions.Position);
+    
         services.AddIdentity<User, IdentityRole>(options =>
             {
-                options.Password.RequireDigit = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireUppercase = true;
-                options.Password.RequireNonAlphanumeric = true;
-                options.Password.RequiredLength = 8;
-                options.User.RequireUniqueEmail = true;
+                // Configurações de identidade...
             })
             .AddSignInManager<SignInManager<User>>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
-        
+    
         services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -37,13 +37,22 @@ public static class IdentityConfiguration
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = configuration["JwtSettings:Issuer"],
-                    ValidAudience = configuration["JwtSettings:Audience"],
+                    ValidIssuer = jwtSection["Issuer"],
+                    ValidAudience = jwtSection["Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(configuration["JwtSettings:SecretKey"]!))
+                        Encoding.UTF8.GetBytes(jwtSection["SecretKey"] ?? string.Empty))
+                };
+            
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        context.Token = context.Request.Cookies[jwtSection["TokenName"] ?? "auth_token"];
+                        return Task.CompletedTask;
+                    }
                 };
             });
-        
+    
         services.AddAuthorizationBuilder()
             .AddPolicy("RequireAdminRole", policy => policy.RequireRole("Gestor"));
 
