@@ -1,0 +1,92 @@
+@use "@angular/material" as mat;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  color-scheme: dark;
+  @include mat.theme(
+    (
+      color: mat.$violet-palette,
+      typography: Roboto,
+      density: 0,
+    )
+  );
+}
+
+html,
+body {
+  font-size: 62.5%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 1.6rem;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.mat-mdc-snack-bar-container .mdc-snackbar__label {
+  font-size: 1.6rem !important;
+  line-height: 2rem !important;
+}
+
+:root {
+  --mat-sys-body-small-size: 1.3rem;
+  --mat-sys-body-small-line-height: 1.5;
+}
+
+.content {
+  margin: 10px;
+}
+
+a.btn {
+  font-size: 1.6rem;
+}
+
+.mdc-fab.full-width{
+  width: 100%;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.mat-mdc-form-field {
+  font-size: 1.6rem !important;
+  mat-label {
+    font-size: 1.6rem !important;
+  }
+}
+
+.form-submit .button {
+  margin-top: 1.6rem;
+  height: 48px;
+  font-size: 1.6rem;
+}
+
+.form-cadastro mat-card-header {
+  margin-bottom: 1rem;
+  justify-content: center;
+}
+
+.form-cadastro mat-card-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #3f51b5;
+  margin-bottom: 1rem;
+}
